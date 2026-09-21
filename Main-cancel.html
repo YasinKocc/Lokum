@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lokum | Payment Canceled</title>
+    <link rel="icon" type="image/x-icon" href="Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Source+Sans+3:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Ottoman';
+            src: local('Ottoman'), url('./Ottoman.otf') format('opentype');
+        }
+
+        :root {
+            --retro-bg: #ffffff;
+            --lokum-red: #c41821;
+            --lokum-purple: #2c2f73;
+            --shadow-hard: 4px 4px 0px 0px #000;
+        }
+
+        body {
+            background-color: var(--retro-bg);
+            font-family: 'Source Sans 3', sans-serif;
+            background-image: radial-gradient(rgba(196, 24, 33, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .retro-font {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .box-retro {
+            border: 3px solid black;
+            background: white;
+            box-shadow: var(--shadow-hard);
+        }
+
+        .btn-retro {
+            display: inline-block;
+            background-color: var(--lokum-red);
+            color: white;
+            border: 3px solid black;
+            padding: 10px 25px;
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            box-shadow: var(--shadow-hard);
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .btn-retro:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 6px 6px 0px 0px #000;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-xl w-full text-center">
+        <div class="box-retro p-8 md:p-12">
+            <h1 class="retro-font text-5xl md:text-7xl mb-6 leading-none">
+                <span data-i18n="cancel_title"
+                    class="bg-black text-white px-4 py-2 transform rotate-2 inline-block border-4 border-black">
+                    OOPS!
+                </span>
+            </h1>
+
+            <p data-i18n="cancel_msg" class="text-xl md:text-2xl font-bold mb-8 leading-tight">
+                Your payment was <span class="text-[var(--lokum-red)] underline decoration-4">canceled</span>.
+            </p>
+
+            <p data-i18n="cancel_desc" class="mb-8 font-medium">
+                No worries. If this was a mistake, you can try again below.
+            </p>
+
+            <div class="flex flex-col gap-4">
+                <a href="index.html" data-i18n="back_home" class="btn-retro">
+                    TRY AGAIN
+                </a>
+                <a href="index.html" class="font-bold text-sm uppercase hover:underline">
+                    Return to home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const pageTranslations = {
+            en: {
+                success_title: "SUCCESS!",
+                success_msg: "Your spot for Çay Akşamı is confirmed!",
+                success_inbox: "📩 Check your inbox! Your QR code ticket has been sent to your email. You will need it at the door.",
+                back_home: "BACK TO HOME",
+                cancel_title: "OOPS!",
+                cancel_msg: "Your payment was canceled.",
+                cancel_desc: "No worries. If this was a mistake, you can try again below."
+            },
+            tr: {
+                success_title: "BAŞARILI!",
+                success_msg: "Çay Akşamı yeriniz onaylandı!",
+                success_inbox: "📩 Gelen kutunuzu kontrol edin! QR kod biletiniz e-posta adresinize gönderildi. Kapıda ihtiyacınız olacak.",
+                back_home: "ANA SAYFAYA DÖN",
+                cancel_title: "EYVAH!",
+                cancel_msg: "Ödeme iptal edildi.",
+                cancel_desc: "Bu bir hata ise aşağıdan tekrar deneyebilirsiniz."
+            },
+            nl: {
+                success_title: "GELUKT!",
+                success_msg: "Je plek voor Çay Akşamı is bevestigd!",
+                success_inbox: "📩 Check je inbox! Je QR-code ticket is naar je e-mail verzonden. Je hebt het nodig aan de deur.",
+                back_home: "TERUG NAAR HOME",
+                cancel_title: "OEPPS!",
+                cancel_msg: "Betaling geannuleerd.",
+                cancel_desc: "Geen zorgen. Als dit een fout was, kun je het hieronder opnieuw proberen."
+            },
+            fr: {
+                success_title: "SUCCÈS!",
+                success_msg: "Votre place pour Çay Akşamı est confirmée !",
+                success_inbox: "📩 Vérifiez votre boîte de réception ! Votre billet QR code a été envoyé par e-mail. Vous en aurez besoin à l'entrée.",
+                back_home: "RETOUR À L'ACCUEIL",
+                cancel_title: "OUPS !",
+                cancel_msg: "Paiement annulé.",
+                cancel_desc: "Pas de souci. S'il s'agit d'une erreur, vous pouvez réessayer ci-dessous."
+            }
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedLang = localStorage.getItem('lokumLang') || 'en';
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (pageTranslations[savedLang] && pageTranslations[savedLang][key]) {
+                    el.innerText = pageTranslations[savedLang][key];
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

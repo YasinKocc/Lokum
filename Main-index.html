@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lokum | Brussels Association</title>
+    <link rel="icon" type="image/x-icon" href="Logo.png">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anton&family=Source+Sans+3:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <style>
+        @font-face {
+            font-family: 'Ottoma';
+            src: local('Ottoma'), url('./Ottoma.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --retro-bg: #ffffff;
+            --lokum-red: #c41821;
+            --lokum-purple: #2c2f73;
+            --retro-black: #1a1a1a;
+            --shadow-hard: 4px 4px 0px 0px #000;
+        }
+
+        body {
+            background-color: var(--retro-bg);
+            color: var(--retro-black);
+            font-family: 'Source Sans 3', sans-serif;
+            background-image: radial-gradient(rgba(44, 47, 115, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .retro-font {
+            font-family: 'Poplar Std Black', 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ottoman-font {
+            font-family: 'Ottoma', sans-serif;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .box-retro {
+            border: 3px solid black;
+            background: white;
+            box-shadow: var(--shadow-hard);
+            transition: all 0.1s ease;
+        }
+
+        .btn-retro {
+            display: inline-block;
+            background-color: var(--lokum-red);
+            color: white;
+            border: 3px solid black;
+            padding: 10px 25px;
+            font-family: 'Poplar Std Black', 'Anton', sans-serif;
+            font-size: 1.25rem;
+            text-transform: uppercase;
+            box-shadow: var(--shadow-hard);
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .btn-retro:hover { transform: translate(-1px, -1px); box-shadow: 6px 6px 0px 0px #000; }
+        .btn-retro:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px 0px #000; }
+
+        .marquee-container {
+            border-top: 3px solid black;
+            border-bottom: 3px solid black;
+            background: var(--lokum-purple);
+            color: white;
+            overflow: hidden;
+            display: flex;
+            white-space: nowrap;
+            padding: 10px 0;
+            width: 100%;
+        }
+
+        .marquee-content {
+            font-family: 'Poplar Std Black', 'Anton', sans-serif;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            min-width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            animation: scroll 25s linear infinite;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .glitch-hover:hover {
+            text-shadow: 2px 2px 0px var(--lokum-red), -2px -2px 0px var(--lokum-purple);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: grayscale(100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: white;
+            width: 100%;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 4px solid black;
+            box-shadow: 10px 10px 0px 0px #000;
+            position: relative;
+            padding: 2rem;
+        }
+
+        .fade-in-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .fade-in-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+
+        ::-webkit-scrollbar { width: 12px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-left: 2px solid black; }
+        ::-webkit-scrollbar-thumb { background: var(--retro-black); border: 2px solid black; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--lokum-red); }
+
+        .marquee-container-red {
+            border-bottom: 3px solid black;
+            background: var(--lokum-red);
+            color: white;
+            overflow: hidden;
+            display: flex;
+            white-space: nowrap;
+            padding: 10px 0;
+            width: 100%;
+        }
+
+        .marquee-content-reverse {
+            font-family: 'Poplar Std Black', 'Anton', sans-serif;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            min-width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            animation: scroll-reverse 25s linear infinite;
+        }
+
+        @keyframes scroll-reverse {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(0); }
+        }
+
+        .quota-wrapper { position: relative; overflow: hidden; }
+
+        .sold-out-stripe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200%;
+            background-color: var(--lokum-red);
+            color: white;
+            font-family: 'Poplar Std Black', 'Anton', sans-serif;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            padding: 10px 0;
+            transform: translate(-50%, -50%) rotate(-35deg);
+            z-index: 50;
+            border-top: 4px solid black;
+            border-bottom: 4px solid black;
+            pointer-events: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-inputs-disabled { opacity: 0.4; pointer-events: none; background-color: #eee; }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen">
+
+    <!-- NAVBAR -->
+    <nav class="container mx-auto p-4 md:p-6 flex flex-wrap md:flex-nowrap justify-between items-center relative z-10 md:min-h-[120px] border-b-4 border-black">
+        <div class="w-full md:w-auto flex justify-center mb-6 md:mb-0 mt-4 md:mt-0 md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 z-0 order-1 md:order-2">
+            <a href="#" class="text-3xl md:text-5xl ottoman-font glitch-hover text-black whitespace-nowrap relative inline-block pt-4 md:pt-6 leading-relaxed md:leading-loose">
+                Lokum
+                <span class="absolute top-2 md:top-4 -right-2 md:-right-4 text-[10px] md:text-xs font-sans font-bold bg-[var(--lokum-purple)] text-white px-1 transform rotate-12 uppercase tracking-normal">EST. BXL</span>
+            </a>
+        </div>
+
+        <div class="flex-1 flex justify-start items-center z-20 order-2 md:order-1">
+            <div class="md:hidden flex border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000]">
+                <button onclick="setLanguage('en')" data-lang="en" class="lang-btn bg-[var(--lokum-red)] text-white font-bold px-3 py-2 text-xs border-r-2 border-black">EN</button>
+                <button onclick="setLanguage('tr')" data-lang="tr" class="lang-btn bg-white text-black font-bold px-3 py-2 text-xs border-r-2 border-black">TR</button>
+                <button onclick="setLanguage('nl')" data-lang="nl" class="lang-btn bg-white text-black font-bold px-3 py-2 text-xs border-r-2 border-black">NL</button>
+                <button onclick="setLanguage('fr')" data-lang="fr" class="lang-btn bg-white text-black font-bold px-3 py-2 text-xs">FR</button>
+            </div>
+
+            <div class="hidden md:flex gap-6 relative items-center">
+                <button onclick="scrollToSection('about')" class="font-bold hover:underline decoration-2 underline-offset-4 text-lg" data-i18n="nav_about">ABOUT</button>
+                <button onclick="scrollToSection('contact')" class="font-bold hover:underline decoration-2 underline-offset-4 text-lg" data-i18n="nav_contact">CONTACT</button>
+                <button onclick="openTicketModal()" id="nav-ticket-btn-desktop" class="btn-retro !py-1 !px-3 text-sm md:text-lg ml-2 bg-[var(--lokum-purple)]" data-i18n="nav_tickets" style="display:none;">TICKETS</button>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE: CAREERS BUTTON & LANGUAGE SELECTOR -->
+        <div class="flex-1 flex justify-end items-center gap-3 z-20 order-3 md:order-3">
+
+            <div class="hidden md:flex border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+                <button onclick="setLanguage('en')" data-lang="en" class="lang-btn bg-[var(--lokum-red)] text-white font-bold px-3 py-1 text-sm border-r-2 border-black hover:bg-gray-100 transition-colors">EN</button>
+                <button onclick="setLanguage('tr')" data-lang="tr" class="lang-btn bg-white text-black font-bold px-3 py-1 text-sm border-r-2 border-black hover:bg-gray-100 transition-colors">TR</button>
+                <button onclick="setLanguage('nl')" data-lang="nl" class="lang-btn bg-white text-black font-bold px-3 py-1 text-sm border-r-2 border-black hover:bg-gray-100 transition-colors">NL</button>
+                <button onclick="setLanguage('fr')" data-lang="fr" class="lang-btn bg-white text-black font-bold px-3 py-1 text-sm hover:bg-gray-100 transition-colors">FR</button>
+            </div>
+
+            <div class="md:hidden ml-2">
+                <button onclick="openTicketModal()" id="nav-ticket-btn-mobile" class="font-bold text-sm border-2 border-black px-3 py-2 bg-[var(--lokum-purple)] text-white shadow-[2px_2px_0px_0px_#000]" data-i18n="nav_tickets" style="display:none;">TICKETS</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MARQUEE -->
+    <div class="marquee-container mt-0">
+        <div class="marquee-content" id="marquee-1"></div>
+        <div class="marquee-content" id="marquee-2" aria-hidden="true"></div>
+    </div>
+
+    <div id="red-marquee-wrapper" style="display: none;">
+        <div class="marquee-container-red">
+            <div class="marquee-content-reverse" id="red-marquee-1"></div>
+            <div class="marquee-content-reverse" id="red-marquee-2" aria-hidden="true"></div>
+        </div>
+    </div>
+    
+    <!-- EVENT BANNER SECTION -->
+    <section id="banner-section" class="container mx-auto px-4 my-10 md:my-14 max-w-4xl relative z-10" style="display: none;">
+        <div class="flex flex-col items-center text-center">
+            <div class="relative w-full group border-4 border-black rounded-[40px] shadow-[10px_10px_0px_0px_#c41821] transition-transform duration-500 hover:scale-[1.01] overflow-visible">
+                <div id="banner-tag" class="absolute -top-3 -left-3 z-30 bg-[var(--lokum-red)] text-white px-5 py-1.5 font-bold border-4 border-black transform -rotate-3 text-xs md:text-sm shadow-[3px_3px_0px_0px_#000] uppercase tracking-widest">
+                    UPCOMING EVENT
+                </div>
+                <div class="w-full h-[250px] md:h-[400px] rounded-[36px] overflow-hidden relative">
+                    <img id="banner-img" src="" alt="Lokum Event" class="w-full h-full object-cover">
+                </div>
+            </div>
+    
+            <div class="mt-8 space-y-6 w-full max-w-2xl">
+                <p id="banner-desc" class="text-base md:text-xl font-medium text-[var(--retro-black)] leading-relaxed italic px-4">
+                    Fetching details...
+                </p>
+                <div id="banner-btn-container" class="flex flex-wrap justify-center gap-4 mt-2">
+                    <button id="banner-btn-buy" onclick="openTicketModal()" class="btn-retro bg-[var(--lokum-purple)] text-white px-8 py-3 text-sm md:text-base min-w-[180px]" style="display:none;">
+                        BUY TICKET
+                    </button>
+                    <button id="banner-btn-url" onclick="handleUrlBtnClick()" class="btn-retro bg-white !text-black hover:bg-gray-100 px-8 py-3 text-sm md:text-base min-w-[180px]" style="display:none;">
+                        EXTERNAL LINK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- HERO SECTION (CENTERED, 80% WIDTH) -->
+<section class="container mx-auto px-4 py-8 md:py-12 border-b-4 border-black">
+    
+    <!-- Replaced the grid with a simple centered container (80% width on desktop, 100% on mobile) -->
+    <div class="w-full md:w-[80%] mx-auto">
+
+        <!-- HERO SLOGAN -->
+        <div class="min-w-0">
+            <div class="box-retro h-full p-6 sm:p-8 md:p-12 lg:p-14 bg-white relative flex items-center justify-center">
+                <span class="absolute top-2 left-2 md:top-6 md:left-8 text-5xl md:text-9xl text-[var(--lokum-red)] retro-font opacity-20 leading-none select-none">"</span>
+                <span class="absolute bottom-[-1rem] right-2 md:bottom-[-2rem] md:right-8 text-5xl md:text-9xl text-[var(--lokum-purple)] retro-font opacity-20 leading-none select-none">"</span>
+                
+                <!-- text-center ve flex flex-col items-center eklendi -->
+                <h2 class="w-full text-center flex flex-col items-center text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black leading-tight md:leading-snug tracking-tight relative z-10 text-[var(--retro-black)] uppercase break-words">
+                    <span data-i18n="hero_l1">Where young minds meet over</span>
+                    
+                    <!-- Turkish Tea kutusu -->
+                    <span class="text-white bg-[var(--lokum-red)] px-2 sm:px-3 py-1 transform -rotate-2 inline-block border-2 border-black my-2 shadow-[4px_4px_0px_0px_#2c2f73]" data-i18n="hero_highlight">Turkish tea</span>
+                    
+                    <span data-i18n="hero_l2">to exchange thoughts,</span>
+                    
+                    <!-- Son satır -->
+                    <span class="block mt-1 md:mt-4">
+                        <span data-i18n="hero_l3"></span> 
+                        <span class="text-[var(--lokum-purple)] underline decoration-4 underline-offset-8" data-i18n="hero_l4">viewpoints.</span>
+                    </span>
+                </h2>
+            </div>
+        </div>
+
+    </div>
+</section> 
+    <!-- ABOUT SECTION -->
+    <section id="about" class="bg-white py-12 md:py-24 border-b-4 border-black">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <div class="mb-8 md:mb-16 border-b-4 border-black pb-4 md:pb-6">
+                <h2 class="text-5xl sm:text-6xl md:text-8xl retro-font leading-none tracking-tighter uppercase break-words">
+                    <span data-i18n="about_title1">NOT JUST</span> <span class="text-[var(--lokum-purple)]" data-i18n="about_title2">TEA.</span>
+                </h2>
+            </div>
+            <div class="text-[var(--retro-black)] font-medium leading-relaxed">
+                <p class="text-xl sm:text-2xl md:text-3xl font-bold leading-snug mb-8 md:mb-10 border-l-4 md:border-l-8 border-[var(--lokum-red)] pl-4 md:pl-6" data-i18n="about_p1"></p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 text-base sm:text-lg md:text-xl">
+                    <div class="space-y-6">
+                        <p data-i18n="about_p2"></p>
+                        <p data-i18n="about_p3"></p>
+                    </div>
+                    <div class="space-y-6">
+                        <p data-i18n="about_p4"></p>
+                        <div class="box-retro p-5 md:p-6 bg-[var(--retro-bg)] mt-2 md:mt-4">
+                            <p class="text-sm sm:text-base md:text-lg" data-i18n="about_p5"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contact" class="mt-auto bg-[var(--lokum-purple)] text-white border-t-4 border-black">
+        <div class="container mx-auto px-4 py-12 flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-8">
+            <div>
+                <h2 class="text-6xl md:text-7xl ottoman-font text-white mb-2 pt-4 md:pt-6 leading-loose">Lokum</h2>
+                <p class="text-gray-200 font-mono max-w-sm" data-i18n="footer_desc"></p>
+            </div>
+            <div class="flex flex-col gap-4 items-center md:items-start w-full md:w-auto">
+                <div class="flex flex-col gap-3 w-full max-w-xs mx-auto md:mx-0">
+                    <div class="flex items-center gap-3 justify-between">
+                        <span class="font-bold tracking-widest text-xs sm:text-sm md:text-base uppercase">INSTAGRAM -</span>
+                        <a href="https://www.instagram.com/lokum_be/" target="_blank" class="btn-retro bg-white !text-black !py-1 !px-2 sm:!px-3 !text-xs sm:!text-sm hover:!bg-[var(--lokum-red)] hover:!text-white border-2">@lokum_be</a>
+                    </div>
+                    <div class="flex items-center gap-3 justify-between">
+                        <span class="font-bold tracking-widest text-xs sm:text-sm md:text-base uppercase">TIKTOK -</span>
+                        <a href="https://www.tiktok.com/@lokum_be?is_from_webapp=1&sender_device=pc" target="_blank" class="btn-retro bg-white !text-black !py-1 !px-2 sm:!px-3 !text-xs sm:!text-sm hover:!bg-[var(--lokum-red)] hover:!text-white border-2">@lokum_be</a>
+                    </div>
+                    <div class="flex items-center gap-3 justify-between">
+                        <span class="font-bold tracking-widest text-xs sm:text-sm md:text-base uppercase">YOUTUBE -</span>
+                        <a href="https://www.youtube.com/channel/UCuWgtI_gLnBnR1BAK1Pg0fA" target="_blank" class="btn-retro bg-white !text-black !py-1 !px-2 sm:!px-3 !text-xs sm:!text-sm hover:!bg-[var(--lokum-red)] hover:!text-white border-2">LOKUM</a>
+                    </div>
+                    <div class="flex items-center gap-3 justify-between mt-2 border-t border-white/20 pt-2 md:pt-0 md:border-none">
+                        <span class="font-bold tracking-widest text-xs sm:text-sm md:text-base uppercase">EMAIL -</span>
+                        <span class="font-mono text-sm sm:text-base md:text-lg">info@lokumbe.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-black text-center py-3 font-mono text-[10px] sm:text-xs text-white uppercase">
+            © 2026 <span class="ottoman-font text-sm sm:text-base align-middle mx-1 capitalize">Lokum</span> BRUSSELS
+        </div>
+    </footer>
+
+    <div id="ticketModal" class="modal" onclick="closeTicketModal(event)">
+        <div class="modal-content p-5 md:p-8">
+            <div class="flex justify-between items-start mb-6 border-b-2 border-black pb-2">
+                <h2 class="text-3xl md:text-4xl retro-font" data-i18n="modal_ticket_title">BUY TICKET</h2>
+                <button onclick="closeTicketModal(event, true)" class="text-2xl md:text-3xl font-bold hover:text-[var(--lokum-red)]">&times;</button>
+            </div>
+
+            <div id="payment-step-1" class="space-y-4 font-sans">
+                <div class="bg-[var(--lokum-purple)] text-white p-3 border-2 border-black mb-4 shadow-[4px_4px_0px_0px_#000]">
+                    <h3 id="modal_ticket_event" class="font-bold text-xl">Loading Event...</h3>
+                    <p id="modal-price-display" class="font-mono text-sm">Price: €...</p>
+                </div>
+                <div>
+                    <label class="block font-bold mb-1 uppercase text-xs md:text-sm" data-i18n="modal_name">Full Name</label>
+                    <input type="text" id="ticketName" placeholder="John Doe" class="w-full border-2 border-black p-2 bg-[var(--retro-bg)] focus:outline-none focus:shadow-[4px_4px_0px_0px_#2c2f73]">
+                </div>
+                <div>
+                    <label class="block font-bold mb-1 uppercase text-xs md:text-sm" data-i18n="modal_email">Email (For QR Code)</label>
+                    <input type="email" id="ticketEmail" placeholder="john@example.com" class="w-full border-2 border-black p-2 bg-[var(--retro-bg)] focus:outline-none focus:shadow-[4px_4px_0px_0px_#2c2f73]">
+                </div>
+                <div class="mt-2 text-[10px] md:text-xs text-gray-500 leading-tight italic" id="modal-disclaimer" data-i18n="modal_disclaimer">
+                    <!-- The text will be injected here by Javascript -->
+                </div>
+                <button id="proceedBtn" onclick="preparePayment()" class="w-full btn-retro mt-2 md:text-lg" data-i18n="modal_ticket_btn">PROCEED TO PAYMENT</button>
+            </div>
+
+            <div id="payment-step-2" class="space-y-4 font-sans hidden">
+                <div id="payment-element" class="mb-4"></div>
+                <div id="payment-error" class="text-[var(--lokum-red)] font-bold text-sm hidden bg-[var(--retro-bg)] border-2 border-black p-2"></div>
+                
+                <button id="payBtn" onclick="confirmPayment()" class="w-full btn-retro mt-2 md:text-lg" data-i18n="modal_pay_btn">PAY</button>
+                <button onclick="goBackToStep1()" class="w-full font-bold text-sm uppercase hover:underline mt-4 text-center block opacity-70" data-i18n="modal_back_btn">← Back to Details</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="customNotification" class="fixed bottom-4 right-4 md:bottom-8 md:right-8 transform translate-x-[150%] transition-transform duration-300 z-[100] border-4 border-black bg-white shadow-[8px_8px_0px_0px_#000] p-4 flex items-start gap-4 max-w-sm w-[90%]">
+        <div id="notificationIcon" class="text-2xl mt-[-2px]">⚠️</div>
+        <div class="flex-1">
+            <h4 class="retro-font text-lg leading-none mb-1" id="notificationTitle">ERROR</h4>
+            <p id="notificationText" class="font-bold text-sm leading-tight">Message goes here</p>
+        </div>
+        <button onclick="closeNotification()" class="font-bold text-2xl leading-none hover:text-[var(--lokum-red)]">&times;</button>
+    </div>
+
+    <script>
+        const supabaseUrl = 'https://iltykikjbbqbsgbyidpu.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdHlraWtqYmJxYnNnYnlpZHB1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0MDUxNzMsImV4cCI6MjA5Mjk4MTE3M30.DZgfpPju6x_nJApp1PxlkTPOUv7Du8GDcv3iyNv1mkw';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        const translations = {
+            en: {
+                nav_about: "ABOUT",
+                nav_contact: "CONTACT",
+                nav_tickets: "TICKETS",
+                nav_careers: "CAREERS",
+                marquee: "BRUSSELS • CULTURE • TEA • CONVERSATION • ",
+                hero_l1: "Where young minds meet over",
+                hero_highlight: "Turkish tea",
+                hero_l2: "to exchange thoughts,",
+                hero_l3: "",
+                hero_l4: "experiences and viewpoints.",
+                about_title1: "NOT JUST",
+                about_title2: "TEA.",
+                about_p1: "Lokum is a community founded in October 2024 in Brussels with a simple idea: to create a warm and open space where people can come together, share stories, and feel at home, no matter where they come from.",
+                about_p2: "Inspired by the spirit of Turkish hospitality, Lokum brings people together through cultural, social, and intellectual events. Our aim is not only to celebrate Turkish culture, but also to build bridges between cultures, encourage dialogue, and create meaningful connections across Belgium’s diverse society.",
+                about_p3: "At the heart of Lokum are our regular Çay Akşamı evenings, moderated discussion gatherings where participants talk about everything from everyday life and personal experiences to philosophy, culture, and current issues, all over a cup of tea.",
+                about_p4: "Alongside these, we organize special events such as cultural nights, interactive game evenings, and collaborative activities with other communities and associations.",
+                about_p5: "Lokum is more than an organization. It is a space shaped by the people in it. We believe in inclusivity, respectful conversation, and the power of shared experiences to bring people closer together. Whether you join us to meet new people, explore different perspectives, or simply enjoy a relaxed and welcoming atmosphere, you are always welcome at Lokum.",
+                footer_desc: "Bringing the warmth of Turkish hospitality to the heart of Brussels.",
+                modal_ticket_title: "BUY TICKET",
+                modal_name: "Full Name",
+                modal_email: "Email (For QR Code)",
+                modal_ticket_btn: "PROCEED TO PAYMENT",
+                modal_loading_btn: "LOADING SECURE CHECKOUT...",
+                modal_pay_btn: "PAY",
+                modal_back_btn: "← BACK TO DETAILS",
+                modal_processing: "PROCESSING...",
+                modal_price_label: "Price:",
+                modal_disclaimer: "Note: Photos and videos will be taken during the event. You may appear in this content, which will be shared on our social media. Shared content will not be removed. By purchasing a ticket and attending the event, I declare that I have read, understood, and agree to this notice.",
+                careers_badge: "OPEN ROLES",
+                careers_title: "SHAPE THE FUTURE OF LOKUM WITH US",
+                careers_desc: "Passionate about community building, culture, or event management in Brussels? Join our growing team and make an impact.",
+                careers_btn: "VIEW CAREERS →"
+            },
+            tr: {
+                nav_about: "HAKKIMIZDA",
+                nav_contact: "İLETİŞİM",
+                nav_tickets: "BİLETLER",
+                nav_careers: "KARİYER",
+                marquee: "BRÜKSEL • KÜLTÜR • ÇAY • SOHBET • ",
+                hero_l1: "Genç zihinlerin",
+                hero_highlight: "Türk çayı",
+                hero_l2: "eşliğinde buluşup, fikir ve",
+                hero_l3: "",
+                hero_l4: "deneyimlerini paylaştığı yer.",
+                about_title1: "SADECE ÇAY",
+                about_title2: "DEĞİL.",
+                about_p1: "Ekim 2024'te Brüksel'de kurulan Lokum'un yola çıkış amacı çok sade: insanların bir araya gelebileceği, hikâyelerini paylaşabileceği ve nereden gelirlerse gelsinler kendilerini evlerinde hissedecekleri sıcak bir ortam yaratmak.",
+                about_p2: "İlhamını Türk misafirperverliğinden alan Lokum, düzenlediği kültürel, sosyal ve entelektüel etkinliklerle insanları bir araya getiriyor. Amacımız sadece Türk kültürünü yaşatmak değil; aynı zamanda Belçika'nın çok kültürlü yapısı içinde kültürlerarası köprüler kurmak, diyaloğu teşvik etmek ve samimi bağlar oluşturmak.",
+                about_p3: "Lokum'un kalbinde düzenli olarak gerçekleştirdiğimiz 'Çay Akşamı' etkinlikleri yatıyor. Bir bardak çay eşliğinde, günlük hayattan ve kişisel deneyimlerden felsefeye, kültüre ve güncel meselelere kadar pek çok konuyu konuştuğumuz, moderatör eşliğinde gerçekleşen keyifli sohbetler bunlar.",
+                about_p4: "Bu buluşmaların yanı sıra kültür geceleri, interaktif oyun akşamları ve diğer dernek ve topluluklarla ortak etkinlikler de düzenliyoruz.",
+                about_p5: "Lokum, sıradan bir dernekten çok daha fazlası; içindeki insanlarla şekillenen yaşayan bir alan. İnsanları birbirine yakınlaştırmak için kapsayıcılığa, saygı çerçevesinde yapılan sohbetlere ve ortak deneyimlerin gücüne inanıyoruz. İster yeni insanlarla tanışmak, ister farklı bakış açıları keşfetmek, isterseniz de sadece samimi ve rahat bir ortamın tadını çıkarmak için gelin; Lokum'un kapısı size her zaman açık.",
+                footer_desc: "Türk misafirperverliğinin sıcaklığını Brüksel'in kalbine taşıyoruz.",
+                modal_ticket_title: "BİLET AL",
+                modal_name: "Ad Soyad",
+                modal_email: "E-posta (QR Kod için)",
+                modal_ticket_btn: "ÖDEMEYE GEÇ",
+                modal_loading_btn: "GÜVENLİ ÖDEME YÜKLENİYOR...",
+                modal_pay_btn: "ÖDE",
+                modal_back_btn: "← DETAYLARA DÖN",
+                modal_processing: "İŞLENİYOR...",
+                modal_price_label: "Fiyat:",
+                modal_disclaimer: "Not: Etkinlik esnasında fotoğraf ve video çekimleri yapılacaktır. Bu içeriklerde siz de görünebilirsiniz ve çekimler sosyal medya hesaplarımızda paylaşılacaktır. Paylaşılan içerikler silinmeyecektir. Bilet satın alarak ve etkinliğe katılarak, bu bilgilendirmeyi okuduğumu, anladığımı ve içeriğini kabul ettiğimi beyan ederim.",
+                careers_badge: "AÇIK POZİSYONLAR",
+                careers_title: "LOKUM'UN GELECEĞİNİ BİZİMLE ŞEKİLLENDİRİN",
+                careers_desc: "Brüksel'de topluluk oluşturma, kültür veya etkinlik yönetimi konularında tutkulu musunuz? Büyüyen ekibimize katılın ve fark yaratın.",
+                careers_btn: "İLANLARI İNCELE →"
+            },
+            nl: {
+                nav_about: "OVER ONS",
+                nav_contact: "CONTACT",
+                nav_tickets: "TICKETS",
+                nav_careers: "VACATURES",
+                marquee: "BRUSSEL • CULTUUR • THEE • GESPREK • ",
+                hero_l1: "DÉ PLEK WAAR JONGE DENKERS SAMENKOMEN ONDER HET GENOT VAN ",
+                hero_highlight: "Turkse thee",
+                hero_l2: "om gedachten, ervaringen en ",
+                hero_l3: "",
+                hero_l4: "perspectieven te delen.",
+                about_title1: "NIET ZOMAAR",
+                about_title2: "THEE.",
+                about_p1: "Lokum is in oktober 2024 ontstaan in Brussel vanuit één simpel idee: een warme, open plek creëren waar mensen samenkomen, verhalen delen en zich thuis voelen, ongeacht hun achtergrond.",
+                about_p2: "Geïnspireerd door de beroemde Turkse gastvrijheid, brengt Lokum mensen samen via culturele, sociale en intellectuele evenementen. Ons doel is niet alleen om de Turkse cultuur in de kijker te zetten, maar juist om bruggen te bouwen, dialoog te stimuleren en oprechte verbindingen te creëren binnen de diverse Belgische samenleving.",
+                about_p3: "De kern van Lokum wordt gevormd door onze wekelijkse 'Çay Akşamı' (thee-avonden). Dit zijn gemodereerde gespreksavonden waar we onder het genot van een kopje thee praten over uiteenlopende thema's: van het dagelijkse leven en persoonlijke verhalen tot filosofie, cultuur en de actualiteit.",
+                about_p4: "Daarnaast organiseren we ook speciale activiteiten, zoals culturele avonden, interactieve spelletjesavonden en werken we regelmatig samen met andere Brusselse organisaties en gemeenschappen.",
+                about_p5: "Lokum is veel meer dan zomaar een vzw; het is een plek die voortdurend wordt gevormd door de mensen die er deel van uitmaken. Wij geloven rotsvast in inclusiviteit, respectvolle dialogen en de verbindende kracht van gedeelde ervaringen. Of je nu langskomt om nieuwe mensen te ontmoeten, andere perspectieven te ontdekken of gewoon te genieten van de gezellige sfeer: bij Lokum ben je altijd welkom.",
+                footer_desc: "De warmte van de Turkse gastvrijheid naar het hart van Brussel brengen.",
+                modal_ticket_title: "KOOP TICKET",
+                modal_name: "Volledige Naam",
+                modal_email: "E-mail (Voor QR Code)",
+                modal_ticket_btn: "GA NAAR BETALING",
+                modal_loading_btn: "BEVEILIGDE KASSA LADEN...",
+                modal_pay_btn: "BETAAL",
+                modal_back_btn: "← TERUG NAAR DETAILS",
+                modal_processing: "VERWERKEN...",
+                modal_price_label: "Prijs:",
+                modal_disclaimer: "Opmerking: Tijdens het evenement zullen foto- en video-opnames worden gemaakt. Het is mogelijk dat u in deze beelden voorkomt en dat ze op onze sociale media worden gedeeld. Gedeelde inhoud zal niet worden verwijderd. Door een ticket te kopen en deel te nemen aan het evenement, verklaar ik dat ik deze informatie heb gelezen, begrepen en aanvaard.",
+                careers_badge: "OPENSTAANDE VACATURES",
+                careers_title: "VORM DE TOEKOMST VAN LOKUM MET ONS",
+                careers_desc: "Gepassioneerd door community building, cultuur of evenementenbeheer in Brussel? Word lid van ons groeiende team.",
+                careers_btn: "BEKIJK VACATURES →"
+            },
+            fr: {
+                nav_about: "À PROPOS",
+                nav_contact: "CONTACT",
+                nav_tickets: "BILLETS",
+                nav_careers: "CARRIÈRES",
+                marquee: "BRUXELLES • CULTURE • THÉ • CONVERSATION • ",
+                banner_tag: "PROCHAIN ÉVÉNEMENT",
+                banner_title: "Çay Akşamı Vol. 1",
+                banner_desc: "Rejoignez-nous pour une soirée de conversations profondes, de thé turc chaud et de bonne compagnie. Places limitées !",
+                hero_l1: "L'endroit où les jeunes esprits se retrouvent autour d'un",
+                hero_highlight: "thé turc",
+                hero_l2: "pour partager idées,",
+                hero_l3: "",
+                hero_l4: "expériences et perspectives.",
+                about_title1: "PAS JUSTE DU",
+                about_title2: "THÉ.",
+                about_p1: "Fondée à Bruxelles en octobre 2024, Lokum est née d'une idée simple : créer un espace chaleureux et ouvert où chacun peut se retrouver, partager son histoire et se sentir chez soi, peu importe ses origines.",
+                about_p2: "Inspirée par la chaleureuse hospitalité turque, notre communauté rassemble autour d'événements culturels, sociaux et intellectuels. Notre but n'est pas seulement de mettre en valeur la culture turque, mais de jeter des ponts, d'encourager le dialogue et de tisser des liens authentiques au sein de la société belge si diversifiée.",
+                about_p3: "Au cœur de Lokum, il y a nos soirées « Çay Akşamı » (soirées thé). Autour d'un bon verre de thé, ces espaces de discussion modérés permettent d'échanger sur des sujets variés : de la vie quotidienne aux expériences personnelles, en passant par la philosophie, la culture et l'actualité.",
+                about_p4: "En parallèle, nous organisons des événements spéciaux comme des soirées culturelles, des soirées jeux interactives, et des collaborations enrichissantes avec d'autres associations bruxelloises.",
+                about_p5: "Plus qu'une simple organisation, Lokum est un espace façonné par celles et ceux qui le font vivre. Nous croyons profondément à l'inclusion, au respect mutuel et au pouvoir fédérateur des expériences partagées. Que ce soit pour faire de nouvelles rencontres, découvrir d'autres perspectives ou simplement profiter d'une ambiance conviviale, vous serez toujours les bienvenus chez Lokum.",
+                footer_desc: "Apporter la chaleur de l'hospitalité turque au cœur de Bruxelles.",
+                modal_ticket_title: "ACHETER BILLET",
+                modal_name: "Nom Complet",
+                modal_email: "E-mail (Pour QR Code)",
+                modal_ticket_btn: "PROCÉDER AU PAIEMENT",
+                modal_loading_btn: "CHARGEMENT SÉCURISÉ...",
+                modal_pay_btn: "PAYER",
+                modal_back_btn: "← RETOUR AUX DÉTAILS",
+                modal_processing: "TRAITEMENT...",
+                modal_price_label: "Prix:",
+                modal_disclaimer: "Remarque : Des photos et des vidéos seront prises pendant l’événement. Il est possible que vous apparaissiez dans ces contenus, qui seront partagés sur nos réseaux sociaux. Les contenus publiés ne seront pas supprimés. En achetant un billet et en participant à l’événement, je déclare avoir lu, compris et accepté ces informations.",
+                careers_badge: "POSTES OUVERTS",
+                careers_title: "FAÇONNEZ L'AVENIR DE LOKUM AVEC NOUS",
+                careers_desc: "Passionné par la création de communautés, la culture ou la gestion d'événements à Bruxelles ? Rejoignez notre équipe.",
+                careers_btn: "VOIR LES POSTES →"
+            }
+        };
+
+        function renderBannerUI() {
+            const config = window.currentBannerConfig;
+            if (!config || !config.is_active) {
+                const bannerSection = document.getElementById('banner-section');
+                const redMarqueeWrapper = document.getElementById('red-marquee-wrapper');
+                const navTicketBtnMobile = document.getElementById('nav-ticket-btn-mobile');
+                const navTicketBtnDesktop = document.getElementById('nav-ticket-btn-desktop');
+                
+                if (bannerSection) bannerSection.style.display = 'none';
+                if (redMarqueeWrapper) redMarqueeWrapper.style.display = 'none';
+                if (navTicketBtnMobile) navTicketBtnMobile.style.display = 'none';
+                if (navTicketBtnDesktop) navTicketBtnDesktop.style.display = 'none';
+                return;
+            }
+
+            const currentLang = localStorage.getItem('lokumLang') || 'en';
+            
+            const bannerSection = document.getElementById('banner-section');
+            if (bannerSection) bannerSection.style.display = 'block';
+
+            const bannerTag = document.getElementById('banner-tag');
+            if (bannerTag) { 
+                bannerTag.innerText = config[`sticker_text_${currentLang}`] || config['sticker_text_en'] || ''; 
+                bannerTag.style.backgroundColor = config.sticker_color || '#c41821'; 
+            }
+
+            const bannerDesc = document.getElementById('banner-desc');
+            if (bannerDesc) { 
+                bannerDesc.innerText = config[`desc_text_${currentLang}`] || config['desc_text_en'] || ''; 
+                bannerDesc.style.color = config.desc_color || '#1a1a1a'; 
+            }
+
+            const modalTicketEvent = document.getElementById('modal_ticket_event');
+            if (modalTicketEvent) {
+                modalTicketEvent.innerText = config[`title_text_${currentLang}`] || config['title_text_en'] || '';
+            }
+
+            const bannerImg = document.getElementById('banner-img');
+            if (bannerImg) bannerImg.src = config.image_url || 'Logo.png';
+
+            const bannerBtnBuy = document.getElementById('banner-btn-buy');
+            const bannerBtnUrl = document.getElementById('banner-btn-url');
+            const navTicketBtnMobile = document.getElementById('nav-ticket-btn-mobile');
+            const navTicketBtnDesktop = document.getElementById('nav-ticket-btn-desktop');
+            const redMarqueeWrapper = document.getElementById('red-marquee-wrapper');
+            const bannerImageContainer = document.querySelector('.col-image') || document.getElementById('banner-img').parentElement;
+            const modalContent = document.querySelector('#ticketModal .modal-content');
+
+            if (config.btn_is_active === false) {
+                if (bannerBtnBuy) bannerBtnBuy.style.display = 'none';
+                if (bannerBtnUrl) bannerBtnUrl.style.display = 'none';
+                if (navTicketBtnMobile) navTicketBtnMobile.style.display = 'none';
+                if (navTicketBtnDesktop) navTicketBtnDesktop.style.display = 'none';
+            } else {
+                if (config.btn_type === 'Buy Ticket' || config.btn_type === 'Both') {
+                    if (bannerBtnBuy) {
+                        bannerBtnBuy.style.display = 'inline-block';
+                        bannerBtnBuy.innerText = config[`btn_text_${currentLang}`] || config['btn_text_en'] || 'BUY TICKET';
+                    }
+                    if (navTicketBtnMobile) navTicketBtnMobile.style.display = 'inline-block';
+                    if (navTicketBtnDesktop) navTicketBtnDesktop.style.display = 'inline-block';
+                } else {
+                    if (bannerBtnBuy) bannerBtnBuy.style.display = 'none';
+                    if (navTicketBtnMobile) navTicketBtnMobile.style.display = 'none';
+                    if (navTicketBtnDesktop) navTicketBtnDesktop.style.display = 'none';
+                }
+
+                if (config.btn_type === 'URL Link' || config.btn_type === 'Both') {
+                    if (bannerBtnUrl) {
+                        bannerBtnUrl.style.display = 'inline-block';
+                        bannerBtnUrl.innerText = config[`url_btn_text_${currentLang}`] || config['url_btn_text_en'] || 'LINK';
+                    }
+                } else {
+                    if (bannerBtnUrl) bannerBtnUrl.style.display = 'none';
+                }
+            }
+
+            if (config.marquee_is_active && config[`marquee_text_${currentLang}`]) {
+                redMarqueeWrapper.style.display = 'block';
+                const localizedMarquee = config[`marquee_text_${currentLang}`] || config['marquee_text_en'];
+                const repeatedText = ` ${localizedMarquee} • `.repeat(10);
+                document.getElementById('red-marquee-1').innerText = repeatedText;
+                document.getElementById('red-marquee-2').innerText = repeatedText;
+            } else {
+                redMarqueeWrapper.style.display = 'none';
+            }
+
+            const isFull = config.is_quota_full === true;
+            const rawQuotaText = config[`quota_text_${currentLang}`] || config['quota_text_en'] || "SOLD OUT";
+            const repeatedQuotaText = ` ${rawQuotaText} • `.repeat(15);
+
+            function toggleDiagonalStripe(container, show) {
+                if (!container) return;
+                const existingStripe = container.querySelector('.sold-out-stripe');
+                if (existingStripe) existingStripe.remove();
+
+                if (show) {
+                    container.classList.add('quota-wrapper');
+                    const stripe = document.createElement('div');
+                    stripe.className = 'sold-out-stripe';
+                    stripe.innerText = repeatedQuotaText;
+                    container.appendChild(stripe);
+                } else {
+                    container.classList.remove('quota-wrapper');
+                }
+            }
+
+            toggleDiagonalStripe(bannerImageContainer, isFull);
+
+            if (modalContent) {
+                toggleDiagonalStripe(modalContent, isFull);
+                const modalInputs = modalContent.querySelectorAll('input');
+                const modalSubmitBtn = document.getElementById('proceedBtn');
+
+                if (isFull) {
+                    modalInputs.forEach(input => { input.disabled = true; input.classList.add('modal-inputs-disabled'); });
+                    if (modalSubmitBtn) {
+                        modalSubmitBtn.disabled = true;
+                        modalSubmitBtn.innerText = rawQuotaText;
+                        modalSubmitBtn.style.backgroundColor = "#666";
+                    }
+                } else {
+                    modalInputs.forEach(input => { input.disabled = false; input.classList.remove('modal-inputs-disabled'); });
+                    if (modalSubmitBtn) {
+                        modalSubmitBtn.disabled = false;
+                        modalSubmitBtn.innerText = translations[currentLang].modal_ticket_btn;
+                        modalSubmitBtn.style.backgroundColor = "var(--lokum-red)";
+                    }
+                }
+            }
+
+            const modalPriceDisplay = document.getElementById('modal-price-display');
+            if (modalPriceDisplay) {
+                const price = config.ticket_price ? parseFloat(config.ticket_price).toFixed(2) : "10.00";
+                const priceLabel = translations[currentLang]?.modal_price_label || "Price:";
+                modalPriceDisplay.innerText = `${priceLabel} €${price}`;
+            }
+        }
+
+        async function fetchUpcomingEvent() {
+            const { data, error } = await _supabase.from('banner_config').select('*').eq('id', 1).single();
+            if (data) {
+                window.currentBannerConfig = data;
+                renderBannerUI();
+            }
+
+            _supabase
+                .channel('schema-db-changes')
+                .on(
+                    'postgres_changes',
+                    { event: 'UPDATE', schema: 'public', table: 'banner_config', filter: 'id=eq.1' },
+                    (payload) => {
+                        window.currentBannerConfig = payload.new;
+                        renderBannerUI();
+                    }
+                )
+                .subscribe();
+        }
+
+        function handleUrlBtnClick() {
+            const config = window.currentBannerConfig;
+            if (!config || !config.btn_url) return;
+            
+            let targetUrl = config.btn_url.trim();
+            if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+                targetUrl = 'https://' + targetUrl;
+            }
+            window.open(targetUrl, '_blank');
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const savedLang = localStorage.getItem('lokumLang') || 'en';
+            setLanguage(savedLang);
+
+            fetchUpcomingEvent();
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            document.querySelectorAll('.fade-in-on-scroll').forEach((el) => {
+                observer.observe(el);
+            });
+        });
+
+        function showNotification(title, message, type = 'error') {
+            const notif = document.getElementById('customNotification');
+            const titleEl = document.getElementById('notificationTitle');
+            const textEl = document.getElementById('notificationText');
+            const iconEl = document.getElementById('notificationIcon');
+
+            titleEl.innerText = title;
+            textEl.innerText = message;
+            if (type === 'error') {
+                iconEl.innerText = '⚠️';
+                titleEl.style.color = 'var(--lokum-red)';
+            } else {
+                iconEl.innerText = '✅';
+                titleEl.style.color = 'var(--lokum-purple)';
+            }
+
+            notif.classList.remove('translate-x-[150%]');
+            notif.classList.add('translate-x-0');
+
+            setTimeout(() => {
+                closeNotification();
+            }, 4000);
+        }
+
+        function closeNotification() {
+            const notif = document.getElementById('customNotification');
+            notif.classList.remove('translate-x-0');
+            notif.classList.add('translate-x-[150%]');
+        }
+
+        const ticketModal = document.getElementById('ticketModal');
+        function openTicketModal() {
+            ticketModal.style.display = "flex";
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeTicketModal(event, force) {
+            if (force || event.target === ticketModal) {
+                ticketModal.style.display = "none";
+                document.body.style.overflow = "auto";
+            }
+        }
+
+        const stripe = Stripe('pk_live_51TRHcVR7bCzEtMJTx1XbhRC9clXbKE2xBsBLH9GBWhA6otprtM8d1ZykLxgyT8fqQCnDw7UeLB8LoObmPd7A5TRB00kJ9qyZjN');
+        let elements;
+        let clientSecret;
+
+        async function preparePayment() {
+            const name = document.getElementById('ticketName').value;
+            const email = document.getElementById('ticketEmail').value;
+            const lang = localStorage.getItem('lokumLang') || 'en';
+            const proceedBtn = document.getElementById('proceedBtn');
+
+            if (!name || !email) {
+                showNotification("MISSING INFO", "Please enter your full name and email address.", "error");
+                return;
+            }
+
+            proceedBtn.innerText = translations[lang]?.modal_loading_btn || "LOADING SECURE CHECKOUT...";
+            proceedBtn.style.backgroundColor = "#000";
+
+            const config = window.currentBannerConfig || {};
+            const amount = config.ticket_price ? parseFloat(config.ticket_price) : 10.00;
+
+            try {
+                const response = await fetch('/create-payment-intent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, lang, amount })
+                });
+                const data = await response.json();
+                clientSecret = data.clientSecret;
+
+                const appearance = {
+                    theme: 'flat',
+                    variables: {
+                        fontFamily: '"Source Sans 3", sans-serif',
+                        colorText: '#1a1a1a',
+                        colorDanger: '#c41821',
+                    }
+                };
+                
+                elements = stripe.elements({ 
+                    clientSecret, 
+                    appearance,
+                    locale: lang 
+                });
+                
+                const paymentElement = elements.create('payment');
+                paymentElement.mount('#payment-element');
+
+                document.getElementById('payment-step-1').classList.add('hidden');
+                document.getElementById('payment-step-2').classList.remove('hidden');
+
+            } catch (error) {
+                showNotification("SYSTEM ERROR", "Payment system is down.", "error");
+            } finally {
+                proceedBtn.innerText = translations[lang]?.modal_ticket_btn || "PROCEED TO PAYMENT";
+                proceedBtn.style.backgroundColor = "var(--lokum-red)";
+            }
+        }
+
+        async function confirmPayment() {
+            const payBtn = document.getElementById('payBtn');
+            const errorDiv = document.getElementById('payment-error');
+            const lang = localStorage.getItem('lokumLang') || 'en';
+
+            payBtn.innerText = translations[lang]?.modal_processing || "PROCESSING...";
+            payBtn.style.backgroundColor = "#000";
+            errorDiv.classList.add('hidden');
+
+            const { error } = await stripe.confirmPayment({
+                elements,
+                confirmParams: {
+                    return_url: window.location.origin + '/success.html',
+                }
+            });
+
+            if (error) {
+                errorDiv.innerText = error.message;
+                errorDiv.classList.remove('hidden');
+
+                const config = window.currentBannerConfig || {};
+                const priceStr = config.ticket_price ? parseFloat(config.ticket_price).toFixed(2) : "10.00";
+                
+                const payText = translations[lang]?.modal_pay_btn || "PAY";
+                payBtn.innerText = `${payText} €${priceStr}`;
+                payBtn.style.backgroundColor = "var(--lokum-red)";
+            }
+        }
+
+        function goBackToStep1() {
+            document.getElementById('payment-step-2').classList.add('hidden');
+            document.getElementById('payment-step-1').classList.remove('hidden');
+            if (elements) {
+                const paymentElement = elements.getElement('payment');
+                if (paymentElement) paymentElement.unmount();
+            }
+        }
+
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function setLanguage(langCode) {
+            localStorage.setItem('lokumLang', langCode);
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[langCode] && translations[langCode][key]) {
+                    el.innerText = translations[langCode][key];
+                }
+            });
+
+            const marqueeText = translations[langCode].marquee.repeat(8);
+            const m1 = document.getElementById('marquee-1');
+            const m2 = document.getElementById('marquee-2');
+            if (m1) m1.innerHTML = marqueeText;
+            if (m2) m2.innerHTML = marqueeText;
+
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.lang === langCode) {
+                    btn.classList.add('bg-[var(--lokum-red)]', 'text-white');
+                    btn.classList.remove('bg-white', 'text-black', 'hover:bg-gray-100');
+                } else {
+                    btn.classList.remove('bg-[var(--lokum-red)]', 'text-white');
+                    btn.classList.add('bg-white', 'text-black', 'hover:bg-gray-100');
+                }
+            });
+
+            if (window.currentBannerConfig) {
+                renderBannerUI();
+            }
+        }
+    </script>
+</body>
+
+</html>
