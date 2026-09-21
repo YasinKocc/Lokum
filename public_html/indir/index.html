@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lokum Manager | İndirme Merkezi</title>
+    <link rel="icon" type="image/png" href="Logo.png">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --dot-color: #1f1f1f;
+            --lokum-red: #c41821;
+        }
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--dot-color) 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            text-align: center;
+            padding: 35px 25px;
+            max-width: 340px;
+            width: 90%;
+            background: rgba(20, 20, 20, 0.7);
+            border: 1px solid #2a2a2a;
+            border-radius: 28px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+        .logo {
+            width: 85px;
+            height: 85px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 25px rgba(196, 24, 33, 0.25);
+            border: 1px solid #333;
+        }
+        h1 { font-size: 1.6rem; margin: 0 0 8px 0; font-weight: 800; letter-spacing: 0.5px; }
+        p { color: #aaa; font-size: 0.9rem; margin-bottom: 35px; line-height: 1.5; }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px;
+            margin-bottom: 15px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn:active { transform: scale(0.96); }
+
+        .btn-android {
+            background: linear-gradient(135deg, var(--lokum-red), #8a1017);
+            border: none;
+            box-shadow: 0 6px 20px rgba(196, 24, 33, 0.35);
+        }
+        .btn-apple {
+            background: #1c1c1e;
+            border: 1px solid #333;
+        }
+        
+        .btn img { 
+            width: 24px; 
+            height: 24px; 
+            filter: brightness(0) invert(1); 
+        }
+
+        #appleModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #appleModal.show {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            background: #1c1c1e;
+            padding: 30px 25px;
+            border-radius: 28px;
+            width: 85%;
+            max-width: 320px;
+            text-align: center;
+            border: 1px solid #333;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            transform: translateY(30px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #appleModal.show .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-content h2 { font-size: 1.3rem; margin: 0 0 5px 0; color: #fff; }
+        .modal-content p.sub { color: #888; font-size: 0.85rem; margin-bottom: 25px; }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+            margin: 15px 0;
+            font-size: 0.95rem;
+            color: #eee;
+            background: rgba(255,255,255,0.05);
+            padding: 12px 15px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        /* Yeni: SVG İkon Stilleri */
+        .step-icon { 
+            width: 24px; 
+            height: 24px; 
+            flex-shrink: 0;
+            /* İkonları gri/beyaz tonlarında yapmak için */
+            filter: brightness(0) invert(0.8); 
+        }
+        
+        .close-btn {
+            margin-top: 25px;
+            background: var(--lokum-red);
+            color: white;
+            font-weight: 800;
+            padding: 16px;
+            border-radius: 14px;
+            display: block;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(196, 24, 33, 0.3);
+        }
+        .cancel-link {
+            display: block;
+            margin-top: 15px;
+            color: #888;
+            font-size: 0.9rem;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="Logo.png" alt="Logo" class="logo">
+        <h1>Lokum Manager</h1>
+        <p>Bilet yönetim paneli için resmi<br>uygulama indirme merkezidir.</p>
+
+        <!-- ANDROID BUTONU -->
+        <a href="lokum.apk" class="btn btn-android">
+            <img src="android.svg" alt="Android">
+            Android APK İndir
+        </a>
+
+        <!-- APPLE BUTONU -->
+        <div onclick="openAppleModal()" class="btn btn-apple">
+            <img src="apple.svg" alt="Apple">
+            iPhone için Yükle
+        </div>
+    </div>
+
+    <!-- Apple Yükleme Rehberi (Modal) -->
+    <div id="appleModal">
+        <div class="modal-content">
+            <h2>Hızlı Kurulum</h2>
+            <p class="sub">Uygulamayı telefonunuza ekleyin</p>
+            
+            <div class="step">
+                <!-- EMOJİ YERİNE SVG -->
+                <img src="share.svg" alt="Share" class="step-icon">
+                <span>1. Safari'de en alttaki <b>Paylaş</b> butonuna dokunun.</span>
+            </div>
+            
+            <div class="step">
+                <!-- EMOJİ YERİNE SVG -->
+                <img src="add.svg" alt="Add" class="step-icon">
+                <span>2. Listeyi aşağı kaydırıp <b>Ana Ekrana Ekle</b> seçeneğini seçin.</span>
+            </div>
+            
+            <a href="https://lokumbe.com/manager" class="close-btn" onclick="closeAppleModal()">Anladım, Web'den Aç</a>
+            <div class="cancel-link" onclick="closeAppleModal()">Vazgeç</div>
+        </div>
+    </div>
+
+    <script>
+        function openAppleModal() { 
+            const modal = document.getElementById('appleModal');
+            modal.style.display = 'flex'; 
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+        function closeAppleModal() { 
+            const modal = document.getElementById('appleModal');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+    </script>
+</body>
+</html>

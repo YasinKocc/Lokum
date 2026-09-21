@@ -1,1 +1,0 @@
-# Lokum-Buyuk-Risk

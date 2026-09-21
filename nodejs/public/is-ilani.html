@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers | Lokum Brussels</title>
+    <link rel="icon" type="image/x-icon" href="Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Source+Sans+3:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        @font-face {
+            font-family: 'Ottoma';
+            src: local('Ottoma'), url('./Ottoma.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --retro-bg: #ffffff;
+            --lokum-red: #c41821;
+            --lokum-purple: #2c2f73;
+            --retro-black: #1a1a1a;
+            --shadow-hard: 4px 4px 0px 0px #000;
+        }
+
+        body {
+            background-color: var(--retro-bg);
+            color: var(--retro-black);
+            font-family: 'Source Sans 3', sans-serif;
+            background-image: radial-gradient(rgba(44, 47, 115, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .retro-font {
+            font-family: 'Poplar Std Black', 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ottoman-font {
+            font-family: 'Ottoma', sans-serif;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .box-retro {
+            border: 3px solid black;
+            background: white;
+            box-shadow: var(--shadow-hard);
+        }
+
+        .btn-retro {
+            display: inline-block;
+            background-color: var(--lokum-red);
+            color: white;
+            border: 3px solid black;
+            padding: 10px 25px;
+            font-family: 'Poplar Std Black', 'Anton', sans-serif;
+            font-size: 1.25rem;
+            text-transform: uppercase;
+            box-shadow: var(--shadow-hard);
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .btn-retro:hover { transform: translate(-1px, -1px); box-shadow: 6px 6px 0px 0px #000; }
+        .btn-retro:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px 0px #000; }
+
+        .glitch-hover:hover {
+            text-shadow: 2px 2px 0px var(--lokum-red), -2px -2px 0px var(--lokum-purple);
+        }
+
+        /* Quote Box Style */
+        .quote-box {
+            border-left: 4px solid var(--lokum-purple);
+            background-color: #f8f9fa;
+            padding: 1rem;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen">
+
+    <!-- NAVBAR WITH LANGUAGE SELECTOR (ONLY EN & TR) -->
+    <nav class="container mx-auto p-4 md:p-6 flex justify-between items-center border-b-4 border-black bg-white">
+        <a href="index.html" class="text-3xl md:text-4xl ottoman-font glitch-hover text-black whitespace-nowrap">
+            Lokum
+            <span class="text-xs font-sans font-bold bg-[var(--lokum-purple)] text-white px-1 ml-1 uppercase tracking-normal" data-i18n="nav_badge">CAREERS</span>
+        </a>
+
+        <div class="flex items-center gap-4">
+            <div class="flex border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+                <button onclick="setLanguage('en')" data-lang="en" class="lang-btn bg-white text-black font-bold px-3 py-1 text-xs sm:text-sm border-r-2 border-black hover:bg-gray-100 transition-colors">EN</button>
+                <button onclick="setLanguage('tr')" data-lang="tr" class="lang-btn bg-white text-black font-bold px-3 py-1 text-xs sm:text-sm hover:bg-gray-100 transition-colors">TR</button>
+            </div>
+
+            <a href="index.html" data-i18n="back_home" class="btn-retro !py-2 !px-4 text-xs sm:text-sm bg-white !text-black hover:bg-gray-100 hidden sm:inline-block">
+                ← BACK TO HOME
+            </a>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="container mx-auto px-4 py-8 md:py-12 flex-1 max-w-7xl">
+
+        <!-- ===== OPEN ROLES HEADER (INDEX ILE AYNI STIL) ===== -->
+        <div class="mb-8 md:mb-12">
+
+            <!-- Baslik: index'teki "NOT JUST TEA." ile birebir ayni font/boyut, siyah + mor -->
+            <div class="mb-6 md:mb-10 border-b-4 border-black pb-4 md:pb-6">
+                <h1 class="text-5xl sm:text-6xl md:text-8xl retro-font leading-none tracking-tighter uppercase break-words">
+                    <span data-i18n="page_title1">OPEN</span> <span class="text-[var(--lokum-purple)]" data-i18n="page_title2">ROLES</span>
+                </h1>
+            </div>
+        
+            <!-- GLOBAL INTRO: border / container YOK, sadece temiz paragraflar -->
+            <div class="max-w-4xl space-y-4">
+                <!-- YENİ EKLENEN KARŞILAMA MESAJI (Lokum Mavisi & Kalın) -->
+                <p data-i18n="global_welcome" class="text-[var(--lokum-purple)] text-lg sm:text-xl md:text-2xl font-bold leading-snug"></p>
+                
+                <p data-i18n="global_intro_p1" class="text-[var(--retro-black)] text-lg sm:text-xl md:text-2xl font-bold leading-snug"></p>
+                <p data-i18n="global_intro_p2" class="text-gray-700 text-base md:text-lg leading-relaxed"></p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- LEFT COLUMN: Job Listings List (Span 5 on Desktop, Span 12 on Mobile) -->
+            <div class="lg:col-span-5 space-y-4">
+                <div id="job-list-container" class="space-y-4">
+                    <!-- Javascript will inject job items and their mobile dropdowns here -->
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Job Details Panel (Span 7) - HIDDEN ON MOBILE -->
+            <div class="hidden lg:block lg:col-span-7 sticky top-6">
+                <div id="job-detail-panel" class="box-retro p-6 md:p-8 min-h-[500px] flex flex-col justify-between">
+                    
+                    <!-- DEFAULT / UNSELECTED PLACEHOLDER STATE -->
+                    <div id="job-placeholder" class="flex flex-col items-center justify-center text-center py-20 flex-1">
+                        <div class="w-20 h-20 bg-gray-200 border-2 border-gray-400 flex items-center justify-center text-3xl mb-4 text-gray-400 shadow-[4px_4px_0px_0px_#ccc]">
+                            📋
+                        </div>
+                        <h3 data-i18n="placeholder_title" class="text-xl md:text-2xl retro-font text-gray-400 mb-2">NO POSITION SELECTED</h3>
+                        <p data-i18n="placeholder_desc" class="text-gray-400 font-medium text-sm max-w-sm">
+                            Select an open vacancy from the list on the left to review requirements, details, and application instructions.
+                        </p>
+                    </div>
+
+                    <!-- ACTIVE JOB DETAIL CONTENT (Desktop) -->
+                    <div id="job-content" class="hidden space-y-6">
+                        <div class="flex justify-between items-start border-b-2 border-black pb-4">
+                            <div>
+                                <span id="desktop-detail-dept" class="bg-[var(--lokum-red)] text-white text-xs font-bold px-2.5 py-1 border border-black uppercase tracking-wider inline-block mb-2 ml-1"></span>
+                                <h2 id="desktop-detail-title" class="text-2xl md:text-3xl retro-font"></h2>
+                                <p id="desktop-detail-location" class="text-sm font-bold text-gray-600 mt-1"></p>
+                            </div>
+                            <button onclick="closeJobDetail()" class="text-2xl md:text-3xl font-bold hover:text-[var(--lokum-red)] p-1 leading-none">&times;</button>
+                        </div>
+
+                        <!-- BÜTÜN İÇERİK BURAYA DİNAMİK OLARAK GELECEK -->
+                        <div id="desktop-details-container"></div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto bg-[var(--lokum-purple)] text-white border-t-4 border-black py-6 text-center font-mono text-xs">
+        © 2026 Lokum BRUSSELS • All Rights Reserved
+    </footer>
+
+    <!-- NOTIFICATION -->
+    <div id="customNotification" class="fixed bottom-4 right-4 md:bottom-8 md:right-8 transform translate-x-[150%] transition-transform duration-300 z-[100] border-4 border-black bg-white shadow-[8px_8px_0px_0px_#000] p-4 flex items-start gap-4 max-w-sm w-[90%]">
+        <div id="notificationIcon" class="text-2xl mt-[-2px]">ℹ️</div>
+        <div class="flex-1">
+            <h4 class="retro-font text-lg leading-none mb-1 text-[var(--lokum-purple)]" id="notificationTitle">NOTICE</h4>
+            <p id="notificationText" class="font-bold text-sm leading-tight">Message goes here</p>
+        </div>
+        <button onclick="closeNotification()" class="font-bold text-2xl leading-none hover:text-[var(--lokum-red)]">&times;</button>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                nav_badge: "CAREERS",
+                back_home: "← BACK TO HOME",
+                page_title1: "OPEN",
+                page_title2: "ROLES",
+                // Yeni eklenen karşılama mesajı
+                global_welcome: "We are so glad you're interested in becoming part of our family, welcome!",
+                global_intro_p1: "Lokum is a thriving community where young minds connect over a glass of Turkish tea. By joining our core team, you become a driving force behind this vision. We expect responsibility, ownership, and active involvement, and in return, we offer a warm environment to grow both professionally and personally.",
+                global_intro_p2: "Do the responsibilities look a bit daunting? Don’t worry! We don’t expect perfection from day one. At Lokum, we learn, grow, and tackle challenges together. Bring your energy and a willingness to learn; you’ll always have a supportive team and a warm cup of tea by your side.",
+                placeholder_title: "NO POSITION SELECTED",
+                placeholder_desc: "Select an open vacancy from the list on the left to review requirements, details, and application instructions.",
+                label_mission: "The Mission",
+                label_responsibilities: "Your Responsibilities",
+                label_requirements: "Your Profile",
+                label_nicetohaves: "Nice-to-haves",
+                btn_apply: "APPLY VIA GOOGLE FORM →",
+                apply_note: "* Directs to Google Form recruitment questionnaire.",
+                view_details: "VIEW DETAILS →",
+                close_details: "CLOSE DETAILS ↑"
+            },
+            tr: {
+                nav_badge: "KARİYER",
+                back_home: "← ANA SAYFAYA DÖN",
+                page_title1: "AÇIK",
+                page_title2: "POZİSYONLAR",
+                // Yeni eklenen karşılama mesajı
+                global_welcome: "Ailemizin bir parçası olmakla ilgilenmen bizi çok sevindirdi, hoş geldin!",
+                global_intro_p1: "Lokum, genç zihinlerin bir bardak Türk çayı eşliğinde buluşup bağ kurduğu capcanlı bir topluluk. Çekirdek ekibimize katılarak bu vizyonun en önemli güçlerinden biri olacaksın. Senden sorumluluk almanı, işini sahiplenmeni ve aktif katılım göstermeni bekliyoruz. Buna karşılık sana hem profesyonel hem de kişisel olarak gelişebileceğin sıcacık bir aile ortamı sunuyoruz.",
+                global_intro_p2: "Sorumluluklar gözünü mü korkutuyor? Hiç endişelenme! İlk günden her şeyi kusursuz yapmanı beklemiyoruz. Lokum'da birlikte öğreniyor, büyüyor ve zorlukları beraber aşıyoruz. Sen sadece enerjini ve öğrenme hevesini getir; yanında her zaman seni destekleyen bir ekip ve sıcak bir bardak çay olacak.",
+                placeholder_title: "BİR POZİSYON SEÇİLMEDİ",
+                placeholder_desc: "Gereksinimleri, detayları ve başvuru talimatlarını incelemek için soldaki listeden bir ilan seçin.",
+                label_mission: "Misyon",
+                label_responsibilities: "Sorumluluklarınız",
+                label_requirements: "Profiliniz",
+                label_nicetohaves: "Tercih Edilen Özellikler",
+                btn_apply: "GOOGLE FORM İLE BAŞVUR →",
+                apply_note: "* Google Form başvuru anketine yönlendirir.",
+                view_details: "DETAYLARI İNCELE →",
+                close_details: "DETAYLARI KAPAT ↑"
+            }
+        };
+
+        const GLOBAL_FORM_URL = "https://forms.gle/sCeWjUaHp2VsovFRA";
+
+        let jobsData = [];
+        let selectedJobId = null;
+
+        async function initPage() {
+            try {
+                const response = await fetch('jobs.json?v=' + new Date().getTime());
+                jobsData = await response.json();
+                
+                let savedLang = localStorage.getItem('lokumLang') || 'en';
+                if (savedLang !== 'en' && savedLang !== 'tr') savedLang = 'en';
+                setLanguage(savedLang);
+            } catch (error) {
+                console.error("Error loading jobs.json:", error);
+            }
+        }
+
+        function getJobDetailsHTML(job, localized, isMobile = false) {
+            const currentLang = localStorage.getItem('lokumLang') || 'en';
+            const t = translations[currentLang];
+
+            return `
+                <div class="space-y-4 font-source sans 3 text-sm md:text-base text-gray-800 ${isMobile ? '' : 'max-h-[60vh] overflow-y-auto pr-2'}">
+                    
+                    <div>
+                        <h4 class="font-bold text-lg text-[var(--lokum-purple)] uppercase mb-1">${t.label_mission}</h4>
+                        <p class="leading-relaxed">${localized.description}</p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-lg text-[var(--lokum-purple)] uppercase mb-1">${t.label_responsibilities}</h4>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            ${localized.responsibilities.map(r => `<li>${r}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-lg text-[var(--lokum-purple)] uppercase mb-1">${t.label_requirements}</h4>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            ${localized.requirements.map(req => `<li>${req}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    ${localized.niceToHaves && localized.niceToHaves.length > 0 ? `
+                    <div>
+                        <h4 class="font-bold text-lg text-[var(--lokum-purple)] uppercase mb-1">${t.label_nicetohaves}</h4>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            ${localized.niceToHaves.map(n => `<li>${n}</li>`).join('')}
+                        </ul>
+                    </div>` : ''}
+
+                    ${localized.outroQuote ? `<blockquote class="quote-box text-gray-600 text-xs italic bg-gray-50 border-gray-400 mt-6">💡 "${localized.outroQuote}"</blockquote>` : ''}
+                </div>
+
+                <div class="pt-4 mt-4 border-t-2 border-black">
+                    <a href="${GLOBAL_FORM_URL}" target="_blank" class="w-full btn-retro bg-[var(--lokum-red)] text-center text-base md:text-lg block hover:bg-red-800">
+                        ${t.btn_apply}
+                    </a>
+                    <p class="text-xs text-gray-500 text-center mt-2 italic">${t.apply_note}</p>
+                </div>
+            `;
+        }
+
+        function renderJobList() {
+            const container = document.getElementById('job-list-container');
+            container.innerHTML = '';
+            let currentLang = localStorage.getItem('lokumLang') || 'en';
+            if (currentLang !== 'en' && currentLang !== 'tr') currentLang = 'en';
+            
+            const viewDetailsText = translations[currentLang]?.view_details;
+            const closeDetailsText = translations[currentLang]?.close_details;
+
+            jobsData.forEach(job => {
+                const localized = job[currentLang] || job['en'];
+                const isSelected = selectedJobId === job.id;
+
+                const card = document.createElement('div');
+                card.id = `job-card-${job.id}`;
+                card.className = `box-retro p-5 cursor-pointer hover:bg-gray-50 transition-all border-3 border-black ${isSelected ? 'ring-2 ring-[var(--lokum-purple)] bg-purple-50' : ''}`;
+                
+                card.onclick = (e) => {
+                    if (e.target.closest('a')) return;
+
+                    if (isSelected && window.innerWidth < 1024) {
+                        closeJobDetail();
+                    } else {
+                        selectJob(job.id);
+                    }
+                };
+
+                let cardHTML = `
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-2">
+                        <span class="text-xs font-bold text-[var(--lokum-red)] uppercase text-right">${job.location}</span>
+                    </div>
+                    <h3 class="text-xl retro-font mb-1 text-[var(--retro-black)]">${localized.title}</h3>
+                    
+                    ${!isSelected || window.innerWidth >= 1024 ? `<p class="text-sm text-gray-600 font-medium line-clamp-2">${localized.description}</p>` : ''}
+                    
+                    <div class="mt-3 text-xs font-bold text-[var(--lokum-purple)] uppercase tracking-wider ${isSelected ? 'lg:block hidden' : ''}">
+                        ${viewDetailsText}
+                    </div>
+                    <div class="mt-3 text-xs font-bold text-[var(--lokum-red)] uppercase tracking-wider ${isSelected ? 'block lg:hidden' : 'hidden'}">
+                        ${closeDetailsText}
+                    </div>
+                `;
+
+                if (isSelected) {
+                    cardHTML += `
+                        <div class="lg:hidden mt-4 pt-4 border-t-2 border-black animate-fade-in cursor-default">
+                            <span class="bg-[var(--lokum-red)] text-white text-xs font-bold px-2.5 py-1 border border-black uppercase tracking-wider inline-block mb-4">
+                                ${localized.department || "Lokum Team"}
+                            </span>
+                            ${getJobDetailsHTML(job, localized, true)}
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = cardHTML;
+                container.appendChild(card);
+            });
+        }
+
+        function selectJob(id, skipScroll = false) {
+            selectedJobId = id;
+            renderJobList(); 
+
+            let currentLang = localStorage.getItem('lokumLang') || 'en';
+            if (currentLang !== 'en' && currentLang !== 'tr') currentLang = 'en';
+            const job = jobsData.find(j => j.id === id);
+            if (!job) return;
+
+            const localized = job[currentLang] || job['en'];
+
+            document.getElementById('job-placeholder').classList.add('hidden');
+            document.getElementById('job-content').classList.remove('hidden');
+
+            document.getElementById('desktop-detail-dept').innerText = localized.department || "Lokum Team";
+            document.getElementById('desktop-detail-title').innerText = localized.title;
+            document.getElementById('desktop-detail-location').innerText = `📍 ${job.location}`;
+            
+            document.getElementById('desktop-details-container').innerHTML = getJobDetailsHTML(job, localized, false);
+
+            if (!skipScroll && window.innerWidth < 1024) {
+                setTimeout(() => {
+                    document.getElementById(`job-card-${id}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 50);
+            }
+        }
+
+        function closeJobDetail() {
+            selectedJobId = null;
+            renderJobList();
+            document.getElementById('job-content').classList.add('hidden');
+            document.getElementById('job-placeholder').classList.remove('hidden');
+        }
+
+        function setLanguage(langCode) {
+            if (langCode !== 'en' && langCode !== 'tr') langCode = 'en';
+            localStorage.setItem('lokumLang', langCode);
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[langCode] && translations[langCode][key]) {
+                    el.innerText = translations[langCode][key];
+                }
+            });
+
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.lang === langCode) {
+                    btn.classList.add('bg-[var(--lokum-red)]', 'text-white');
+                    btn.classList.remove('bg-white', 'text-black', 'hover:bg-gray-100');
+                } else {
+                    btn.classList.remove('bg-[var(--lokum-red)]', 'text-white');
+                    btn.classList.add('bg-white', 'text-black', 'hover:bg-gray-100');
+                }
+            });
+
+            renderJobList();
+            if (selectedJobId !== null) {
+                selectJob(selectedJobId, true);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initPage();
+        });
+    </script>
+</body>
+
+</html>
